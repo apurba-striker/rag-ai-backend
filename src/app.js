@@ -56,7 +56,12 @@ const io = socketIo(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: [
+      "http://localhost:3000", // Local development
+      "http://localhost:3001",
+      "https://your-frontend-name.vercel.app", // Your Vercel URL
+      /\.vercel\.app$/, // Allow all Vercel preview deployments
+    ],
     credentials: true,
   })
 );
