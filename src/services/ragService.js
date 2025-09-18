@@ -22,8 +22,8 @@ const ragLogger = winston.createLogger({
 });
 
 // Import services
-const { searchSimilarDocuments } = require("./vectorService");
-const { generateEmbedding } = require("./embeddingService");
+const { searchVectors } = require("./qdrantService");
+const { generateEmbedding } = require("./jinaService");
 
 /**
  * Validate and clean user query
@@ -232,7 +232,7 @@ const generateRAGResponse = async (query, sessionId) => {
 
     // Search for relevant documents
     ragLogger.info("Searching for relevant documents");
-    const searchResults = await searchSimilarDocuments(embedding, 5); // Get top 5 results
+    const searchResults = await searchVectors(embedding, 5); // Get top 5 results
 
     let relevantDocs = [];
     if (searchResults && searchResults.length > 0) {
