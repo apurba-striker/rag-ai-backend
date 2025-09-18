@@ -34,7 +34,7 @@ const io = socketIo(server, {
     origin: [
       "http://localhost:3000", // Local development
       "http://localhost:3001",
-      "https://your-frontend-name.vercel.app", // Your Vercel URL
+      "https://rag-ai-frontend-kappa.vercel.app", // Your Vercel URL
       /\.vercel\.app$/, // Allow all Vercel preview deployments
     ],
     methods: ["GET", "POST"],
@@ -59,7 +59,7 @@ app.use(
     origin: [
       "http://localhost:3000", // Local development
       "http://localhost:3001",
-      "https://your-frontend-name.vercel.app", // Your Vercel URL
+      "https://rag-ai-frontend-kappa.vercel.app/", // Your Vercel URL
       /\.vercel\.app$/, // Allow all Vercel preview deployments
     ],
     credentials: true,
