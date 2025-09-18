@@ -32,8 +32,8 @@ A production-ready Node.js backend for a RAG-powered news chatbot, built for the
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
-cd rag-news-chatbot/backend
+git clone https://github.com/apurba-striker/rag-ai-backend
+cd rag-ai-backend
 
 # Install dependencies
 npm install
