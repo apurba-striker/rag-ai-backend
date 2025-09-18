@@ -78,7 +78,7 @@ const initializeRedis = async () => {
 
         // Test the connection
         await redisClient.ping();
-        redisLogger.info("✅ Connected to Redis Cloud (no TLS)");
+        redisLogger.info("Connected to Redis Cloud (no TLS)");
       } catch (noTlsError) {
         redisLogger.info("Non-TLS connection failed, trying with TLS...");
 
@@ -92,37 +92,37 @@ const initializeRedis = async () => {
         });
 
         await redisClient.ping();
-        redisLogger.info("✅ Connected to Redis Cloud (with TLS)");
+        redisLogger.info("Connected to Redis Cloud (with TLS)");
       }
     } else {
       // Local or other Redis connection
       redisClient = new Redis(redisUrl, redisConfig);
       await redisClient.ping();
-      redisLogger.info("✅ Connected to Redis (local/other)");
+      redisLogger.info("Connected to Redis (local/other)");
     }
 
     // Event listeners
     redisClient.on("connect", () => {
-      redisLogger.info("✅ Redis connected");
+      redisLogger.info("Redis connected");
     });
 
     redisClient.on("ready", () => {
-      redisLogger.info("✅ Redis ready");
+      redisLogger.info("Redis ready");
     });
 
     redisClient.on("error", (err) => {
-      redisLogger.error("❌ Redis error:", {
+      redisLogger.error("Redis error:", {
         error: err.message,
         code: err.code,
       });
     });
 
     redisClient.on("close", () => {
-      redisLogger.warn("⚠️ Redis connection closed");
+      redisLogger.warn("Redis connection closed");
     });
 
     redisClient.on("reconnecting", () => {
-      redisLogger.info("🔄 Redis reconnecting...");
+      redisLogger.info(" Redis reconnecting...");
     });
 
     // Get server info
@@ -130,7 +130,7 @@ const initializeRedis = async () => {
     const redisVersion =
       info.match(/redis_version:([^\r\n]+)/)?.[1] || "unknown";
 
-    redisLogger.info("✅ Redis connection established", {
+    redisLogger.info(" Redis connection established", {
       version: redisVersion,
       mode: isRedisCloud ? "cloud" : "local",
       host: url.hostname,
@@ -138,7 +138,7 @@ const initializeRedis = async () => {
       tls: redisClient.options.tls ? "enabled" : "disabled",
     });
   } catch (error) {
-    redisLogger.error("❌ Failed to initialize Redis:", {
+    redisLogger.error(" Failed to initialize Redis:", {
       error: error.message,
       stack: error.stack,
     });
@@ -287,7 +287,7 @@ const closeRedisConnection = async () => {
   try {
     if (redisClient) {
       await redisClient.quit();
-      redisLogger.info("✅ Redis connection closed gracefully");
+      redisLogger.info(" Redis connection closed gracefully");
     }
   } catch (error) {
     redisLogger.error("Error closing Redis connection:", error);

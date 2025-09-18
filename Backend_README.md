@@ -8,52 +8,23 @@
 
 A production-ready Node.js backend for a RAG-powered news chatbot, built for the **Voosh Full Stack Developer Assignment**.
 
-## 🎯 **Features**
+## **Features**
 
-- ✅ **RAG Pipeline**: Retrieval-Augmented Generation with vector search
-- ✅ **Real-time Chat**: Socket.IO + REST API dual communication
-- ✅ **Session Management**: Redis-based session storage with TTL
-- ✅ **AI Integration**: Google Gemini AI with retry logic & fallbacks  
-- ✅ **Vector Search**: Qdrant integration with mock data fallback
-- ✅ **Smart Caching**: Redis caching for optimal performance
-- ✅ **Error Handling**: Comprehensive error recovery & logging
-- ✅ **Rate Limiting**: Built-in protection against abuse
-- ✅ **Health Monitoring**: Service health check endpoints
+- **RAG Pipeline**: Retrieval-Augmented Generation with vector search
+- **Real-time Chat**: Socket.IO + REST API dual communication
+- **Session Management**: Redis-based session storage with TTL
+- **AI Integration**: Google Gemini AI with retry logic & fallbacks
+- **Vector Search**: Qdrant integration with mock data fallback
+- **Smart Caching**: Redis caching for optimal performance
+- **Error Handling**: Comprehensive error recovery & logging
+- **Rate Limiting**: Built-in protection against abuse
+- **Health Monitoring**: Service health check endpoints
 
-## 🏗️ **Architecture**
-
-```
-Backend Structure:
-├── src/
-│   ├── app.js                    # Main application entry
-│   ├── config/
-│   │   ├── redis.js              # Redis connection & session management
-│   │   └── logger.js             # Winston logging configuration
-│   ├── controllers/
-│   │   └── chatController.js     # Chat logic & Socket.IO handlers
-│   ├── middleware/
-│   │   ├── validation.js         # Request validation (Joi)
-│   │   ├── rateLimiter.js        # Rate limiting middleware
-│   │   └── errorHandler.js       # Global error handling
-│   ├── routes/
-│   │   ├── chat.js               # Chat API endpoints
-│   │   ├── session.js            # Session management endpoints
-│   │   └── health.js             # Health check endpoints
-│   ├── services/
-│   │   ├── ragService.js         # RAG pipeline orchestration
-│   │   ├── jinaService.js        # Jina AI embeddings service
-│   │   └── qdrantService.js      # Qdrant vector database service
-│   └── utils/
-│       └── constants.js          # Application constants
-├── package.json
-├── .env.example
-└── README.md
-```
-
-## 🚀 **Quick Start**
+## **Quick Start**
 
 ### **Prerequisites**
-- Node.js 18+ 
+
+- Node.js 18+
 - Redis server (local or cloud)
 - Google Gemini API key
 
@@ -107,6 +78,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ### **Getting API Keys**
 
 #### **1. Google Gemini API (Required)**
+
 ```bash
 # Visit: https://makersuite.google.com/app/apikey
 # 1. Create Google AI Studio account
@@ -115,15 +87,17 @@ RATE_LIMIT_MAX_REQUESTS=100
 ```
 
 #### **2. Jina AI Embeddings (Optional)**
+
 ```bash
 # Visit: https://jina.ai/embeddings/
 # 1. Create free account
-# 2. Get API key from dashboard  
+# 2. Get API key from dashboard
 # 3. Add to .env: JINA_API_KEY=your_key_here
 # Note: Uses mock embeddings if not provided
 ```
 
 #### **3. Qdrant Vector DB (Optional)**
+
 ```bash
 # Visit: https://qdrant.tech/
 # 1. Create free cluster
@@ -135,6 +109,7 @@ RATE_LIMIT_MAX_REQUESTS=100
 ### **Redis Setup**
 
 #### **Option 1: Local Redis**
+
 ```bash
 # Install Redis
 # macOS:
@@ -151,6 +126,7 @@ sudo systemctl start redis-server
 ```
 
 #### **Option 2: Cloud Redis**
+
 ```bash
 # Recommended services:
 # - Redis Cloud (free tier): https://redis.com/
@@ -183,7 +159,7 @@ The server will start on `http://localhost:5000` (or specified PORT).
 GET /health
 # Returns: Server health status
 
-GET /health/detailed  
+GET /health/detailed
 # Returns: Detailed service health (Redis, AI services, etc.)
 ```
 
@@ -198,7 +174,7 @@ GET /api/session/:sessionId
 # Get session details and message history
 # Returns: { sessionId, messages[], statistics }
 
-DELETE /api/session/:sessionId  
+DELETE /api/session/:sessionId
 # Clear/delete session
 # Returns: { message, sessionId, timestamp }
 
@@ -220,7 +196,7 @@ POST /api/chat/send
 # Returns: { answer, sources[], metadata }
 
 GET /api/chat/history/:sessionId
-# Get chat history for session  
+# Get chat history for session
 # Returns: { messages[], messageCount, timestamp }
 ```
 
@@ -228,20 +204,20 @@ GET /api/chat/history/:sessionId
 
 ```javascript
 // Create session
-const session = await fetch('/api/session/create', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' }
+const session = await fetch("/api/session/create", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
 });
 const { sessionId } = await session.json();
 
 // Send message
-const response = await fetch('/api/chat/send', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("/api/chat/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     sessionId: sessionId,
-    message: "What are the latest AI developments?"
-  })
+    message: "What are the latest AI developments?",
+  }),
 });
 
 const { answer, sources, metadata } = await response.json();
@@ -250,18 +226,20 @@ const { answer, sources, metadata } = await response.json();
 ## 🔌 **Socket.IO Events**
 
 ### **Client → Server**
+
 ```javascript
 // Join session
-socket.emit('join_session', sessionId);
+socket.emit("join_session", sessionId);
 
 // Send message
-socket.emit('send_message', { sessionId, message });
+socket.emit("send_message", { sessionId, message });
 
 // Clear session
-socket.emit('clear_session', sessionId);
+socket.emit("clear_session", sessionId);
 ```
 
 ### **Server → Client**
+
 ```javascript
 // Session history loaded
 socket.on('session_history', (messages) => {...});
@@ -282,17 +260,20 @@ socket.on('error', (errorMessage) => {...});
 ## 🧪 **Testing**
 
 ### **Health Check**
+
 ```bash
 curl http://localhost:5000/health
 ```
 
 ### **Create Session**
+
 ```bash
 curl -X POST http://localhost:5000/api/session/create \
   -H "Content-Type: application/json"
 ```
 
 ### **Send Message**
+
 ```bash
 curl -X POST http://localhost:5000/api/chat/send \
   -H "Content-Type: application/json" \
@@ -300,15 +281,16 @@ curl -X POST http://localhost:5000/api/chat/send \
 ```
 
 ### **WebSocket Test**
+
 ```html
 <script src="/socket.io/socket.io.js"></script>
 <script>
-const socket = io('http://localhost:5000');
-socket.emit('join_session', 'test-session-123');
-socket.emit('send_message', { 
-  sessionId: 'test-session-123', 
-  message: 'Hello!' 
-});
+  const socket = io("http://localhost:5000");
+  socket.emit("join_session", "test-session-123");
+  socket.emit("send_message", {
+    sessionId: "test-session-123",
+    message: "Hello!",
+  });
 </script>
 ```
 
@@ -317,6 +299,7 @@ socket.emit('send_message', {
 ### **Render.com Deployment**
 
 1. **Create `render.yaml`:**
+
 ```yaml
 services:
   - type: web
@@ -332,6 +315,7 @@ services:
 ```
 
 2. **Environment Variables:**
+
 ```bash
 # Add in Render dashboard:
 REDIS_URL=your_redis_cloud_url
@@ -341,6 +325,7 @@ QDRANT_URL=your_qdrant_url (optional)
 ```
 
 ### **Railway Deployment**
+
 ```bash
 # Connect your GitHub repo to Railway
 # Set environment variables in Railway dashboard
@@ -348,6 +333,7 @@ QDRANT_URL=your_qdrant_url (optional)
 ```
 
 ### **Docker Deployment**
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -358,14 +344,16 @@ EXPOSE 5000
 CMD ["npm", "start"]
 ```
 
-## 📊 **Monitoring & Logging**
+## **Monitoring & Logging**
 
 ### **Winston Logging**
+
 - **Console**: Colored logs for development
 - **File**: Production logs (if configured)
 - **Levels**: error, warn, info, debug
 
 ### **Health Checks**
+
 ```http
 GET /health/detailed
 # Returns service status:
@@ -373,7 +361,7 @@ GET /health/detailed
   "status": "healthy",
   "services": {
     "redis": "connected",
-    "gemini": "operational", 
+    "gemini": "operational",
     "embedding": "healthy",
     "vectorDB": "healthy"
   },
@@ -387,6 +375,7 @@ GET /health/detailed
 ### **Common Issues**
 
 #### **1. Redis Connection Failed**
+
 ```bash
 # Error: connect ECONNREFUSED 127.0.0.1:6379
 # Solution: Ensure Redis server is running
@@ -397,6 +386,7 @@ redis-cli ping  # Should return PONG
 ```
 
 #### **2. Gemini API 503 Error**
+
 ```bash
 # Error: [503 Service Unavailable] The model is overloaded
 # Solution: The app handles this automatically with:
@@ -406,6 +396,7 @@ redis-cli ping  # Should return PONG
 ```
 
 #### **3. Port Already in Use**
+
 ```bash
 # Error: EADDRINUSE :::5000
 # Solution: Change port or kill existing process
@@ -415,6 +406,7 @@ lsof -ti:5000 | xargs kill -9
 ```
 
 #### **4. Missing Environment Variables**
+
 ```bash
 # Error: GEMINI_API_KEY is required
 # Solution: Check .env file exists and has correct values
@@ -423,6 +415,7 @@ cp .env.example .env
 ```
 
 ### **Debug Mode**
+
 ```bash
 DEBUG=* npm run dev
 # OR
@@ -432,63 +425,180 @@ NODE_ENV=development DEBUG_LOGS=true npm run dev
 ## 📈 **Performance Optimization**
 
 ### **Redis Optimization**
+
 ```javascript
-// Session TTL (Time To Live) 
-SESSION_TTL=3600  // 1 hour
+// Session TTL (Time To Live)
+SESSION_TTL = 3600; // 1 hour
 
 // Connection pooling
-REDIS_POOL_SIZE=10
+REDIS_POOL_SIZE = 10;
 
 // Memory optimization
-MAX_SESSION_SIZE=100  // messages per session
+MAX_SESSION_SIZE = 100; // messages per session
 ```
 
 ### **Rate Limiting**
+
 ```javascript
 // Default limits (adjust in .env):
-RATE_LIMIT_WINDOW_MS=60000     // 1 minute
-RATE_LIMIT_MAX_REQUESTS=100    // 100 requests/minute
-CHAT_RATE_LIMIT=30             // 30 chat messages/minute
+RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+RATE_LIMIT_MAX_REQUESTS = 100; // 100 requests/minute
 ```
 
 ### **Caching Strategy**
+
 - **L1**: Redis (session data, chat history)
-- **L2**: In-memory (embeddings, frequently accessed data) 
+- **L2**: In-memory (embeddings, frequently accessed data)
 - **TTL**: Configurable expiration for all cached data
 
-## 🔐 **Security Features**
+## **Security Features**
 
-- ✅ **Rate Limiting**: Prevents API abuse
-- ✅ **Input Validation**: Joi schema validation
-- ✅ **CORS Configuration**: Controlled cross-origin requests  
-- ✅ **Error Sanitization**: No sensitive data in error responses
-- ✅ **Session Security**: UUID-based session identifiers
-- ✅ **Environment Variables**: Sensitive data in environment
+- **Rate Limiting**: Prevents API abuse
+- **Input Validation**: Joi schema validation
+- **CORS Configuration**: Controlled cross-origin requests
+- **Error Sanitization**: No sensitive data in error responses
+- **Session Security**: UUID-based session identifiers
+- **Environment Variables**: Sensitive data in environment
 
-## 📖 **Code Quality**
+## **Code Quality**
 
-- ✅ **ESLint**: Code linting and formatting
-- ✅ **Winston**: Structured logging
-- ✅ **Error Handling**: Comprehensive error coverage
-- ✅ **Validation**: Request/response validation
-- ✅ **Documentation**: Inline code documentation
-- ✅ **Separation of Concerns**: Clean architecture
+- **ESLint**: Code linting and formatting
+- **Winston**: Structured logging
+- **Error Handling**: Comprehensive error coverage
+- **Validation**: Request/response validation
+- **Documentation**: Inline code documentation
+- **Separation of Concerns**: Clean architecture
 
-## 🤝 **Contributing**
+## Code Walkthrough (End‑to‑End Flow)
 
-This is an assignment project for Voosh. The implementation demonstrates:
-- **Production-ready code** with proper error handling
-- **Scalable architecture** with separation of concerns  
-- **Modern Node.js practices** with async/await
-- **Comprehensive testing** capabilities
-- **Documentation** and maintainability focus
+### 1) How embeddings are created, indexed, and stored
 
-## 📄 **License**
+- **Collection and parsing**: `services/newsIngestService.js`
 
-This project is part of a technical assignment for Voosh and is for demonstration purposes.
+  - Pulls from curated RSS feeds (CNN/Reuters/BBC/etc.) via `rss-parser`.
+  - Resolves article URLs and scrapes the main content using `axios` + `cheerio`, stripping ads, banners, and noisy DOM nodes. Ensures a minimum content length and caps content to avoid token bloat.
+  - Produces normalized article objects: `{ id, title, content, url, publishedDate, source, description, categories }`.
 
----
+- **Embeddings generation**: `services/embeddingService.js`
 
-**Built with ❤️ for the Voosh Full Stack Developer Assignment**
+  - Uses Jina AI embeddings API (`jina-embeddings-v2-base-en`, 768‑dim) with retry/backoff.
+  - Provides both `generateEmbedding(text)` and `generateBatchEmbeddings(texts, batchSize)`; the ingest pipeline uses batch mode for throughput and gracefully falls back to per‑item requests on batch errors. A zero‑vector is used as a last‑resort fallback to keep pipeline continuity.
 
-For questions or issues, please refer to the troubleshooting section or contact the development team.
+- **Vector indexing/storage**: `services/vectorService.js`
+
+  - Initializes Qdrant once at boot (`initializeQdrant`), creating the collection when missing with `size: 768`, `distance: Cosine`.
+  - Upserts documents in batches with payload fields such as `title`, `content`, `url`, `publishedDate`, `source`, and `ingestionTimestamp`.
+  - Exposes `searchSimilarDocuments(queryEmbedding, topK, filters)` for semantic retrieval and `getCollectionStats()` for visibility.
+
+- **Ingestion orchestration**: `services/newsIngestService.js#ingestNewsFromRSS`
+  - Orchestrates feeds → parse → embed (batch) → attach vectors → upsert to Qdrant.
+  - Returns summary stats (counts, source/category distributions, timing).
+
+Notes:
+
+- The RAG answer-time path embeds the user query and performs a Qdrant similarity search over these stored vectors to build the context used by the LLM.
+
+### 2) How Redis caching & session history works
+
+- **Initialization**: `config/redis.js#initializeRedis`
+
+  - Connects using `ioredis` with robust retry/backoff and optional TLS for cloud providers. Connection health is logged and monitored.
+
+- **Session storage**:
+
+  - `saveSession(sessionId, messages)`: Stores `{ sessionId, messages[], lastUpdated, messageCount }` as a JSON blob under key `session:<id>` with TTL (`REDIS_TTL`, default 3600s) via `SETEX`.
+  - `getSession(sessionId)`: Fetches and parses the JSON; returns `[]` when absent/expired.
+  - `extendSessionTTL(sessionId)`: Renews TTL during active use; `deleteSession(sessionId)` clears the key.
+
+- **Usage**:
+  - Session history is read/written by API and Socket handlers to preserve conversational context between messages and across reconnects.
+
+#### TTL configuration & cache warming
+
+- **Configure TTL**
+  - Set `REDIS_TTL` in your environment (seconds). Example:
+
+```env
+REDIS_URL=redis://localhost:6379
+REDIS_TTL=3600  # 1 hour
+```
+
+- The TTL is enforced during `saveSession(sessionId, messages)` via `SETEX` and can be renewed with `extendSessionTTL(sessionId)`.
+
+- **Renew TTL on activity** (keeps active chats alive):
+
+```js
+// Example inside a message handler
+const { saveSession, extendSessionTTL, getSession } = require("./config/redis");
+
+const messages = await getSession(sessionId);
+messages.push({ role: "user", content: userMessage, ts: Date.now() });
+await saveSession(sessionId, messages);
+await extendSessionTTL(sessionId); // bump expiry for active session
+```
+
+- **Cache warming on startup** (optional):
+  - Preload frequently used metadata and hot queries after the server boots to reduce first-hit latency.
+
+```js
+// app startup (after Redis/Qdrant init)
+const {
+  getQdrantClient,
+  getCollectionStats,
+} = require("./services/vectorService");
+const { saveSession } = require("./config/redis");
+
+async function warmCaches() {
+  // 1) Warm collection stats
+  try {
+    await getCollectionStats();
+  } catch (_) {}
+
+  // 2) Seed a demo session (optional UX improvement)
+  await saveSession("demo-session", [
+    { role: "system", content: "Welcome to RAG News!", ts: Date.now() },
+  ]);
+
+  // 3) Precompute hot query contexts (pseudo‑code)
+  // const embedding = await generateEmbedding("latest ai news");
+  // await searchSimilarDocuments(embedding, 5);
+}
+
+// In startServer(): await warmCaches();
+```
+
+### 3) How the frontend calls API/Socket and handles responses
+
+- **HTTP API**: `src/app.js` mounts Express routers (`/api/chat`, `/api/session`). The frontend uses these endpoints to:
+
+  - Create/fetch/delete sessions and statistics.
+  - Send chat messages to the server for RAG answers.
+
+- **WebSocket (Socket.IO)**: `app.js` wires Socket.IO and delegates to `controllers/chatController`.
+
+  - Typical events: `join_session`, `send_message`, server emits `session_history`, `new_message`, `bot_typing`, and error notifications.
+  - The frontend listens/emits accordingly to provide real‑time UX alongside REST fallbacks.
+
+- **RAG response pipeline (request path)**: `services/ragService.js#generateRAGResponse`
+  - Validates/cleans the user query.
+  - Generates an embedding for the query (Jina), then searches Qdrant for top results and filters by a relevance score threshold.
+  - Builds a concise context from the matched payloads and prompts Gemini (`gemini-1.5-flash`) with clear instructions to remain grounded in sources.
+  - Returns `{ answer, sources[], metadata }`; on Gemini overload/errors, uses a content‑aware fallback template while still returning sources.
+
+### 4) Noteworthy design decisions and potential improvements
+
+- **Decisions**:
+
+  - Qdrant with cosine distance and 768‑dim Jina embeddings for balanced recall/precision and cost.
+  - Batch embeddings with graceful degradation to individual calls on error; conservative rate limiting delays.
+  - Redis sessions with TTL for memory hygiene and simple stateless scaling across instances.
+  - Explicit logging via Winston per subsystem (app, Redis, embeddings, vector DB, RAG) to avoid circular deps and to simplify troubleshooting.
+
+- **Improvements**:
+  - Add payload fields for extractive snippets and per‑chunk indexing; consider chunking long articles and storing tokenized snippets for tighter grounding.
+  - Implement hybrid retrieval: keyword/BM25 filter + vector search; add metadata filters (date/source/category) surfaced to the UI.
+  - Cache hot embeddings and recent search results in Redis to reduce latency on repeated queries.
+  - Add rate limiter/middleware per IP/session for `/api/chat/send` and Socket events; currently app has scaffolding but can be tightened.
+  - Introduce background re‑ingestion jobs and freshness windows (e.g., last 24–72 hours) with periodic cleanups.
+  - Observability: structured tracing (OpenTelemetry) and per‑request correlation IDs across services.
+  - Improve LLM prompting with citations formatting and JSON‑structured answers to ease UI rendering.
